@@ -1,21 +1,23 @@
-#include "Game.h"
 #include <iostream>
 #include <conio.h>
 #include <Windows.h>
 #include <fstream>
 
+#include "Game.h"
+#include "Enemy.h"
+#include "Key.h"
+#include "Door.h"
+#include "Goal.h"
+#include "Money.h"
+
 using namespace std;
 
-constexpr int kOpenDoorColor = 10;
-constexpr int kClosedDoorColor = 12;
-constexpr int kRegularColor = 7;
-
-constexpr char kTopRightBorder = 187;
-constexpr char kTopLeftBorder = 201;
-constexpr char kBottomRightBorder = 188;
-constexpr char kBottomLeftBorder = 200;
-constexpr char kHorizontalBorder = 205;
-constexpr char kVerticalBorder = 186;
+constexpr int kArrowInput = 224;
+constexpr int kLeftArrow = 75;
+constexpr int kRightArrow = 77;
+constexpr int kUpArrow = 72;
+constexpr int kDownArrow = 80;
+constexpr int kEscapeKey = 27;
 
 Game::Game() 
 : m_isGameOver(false) {
@@ -37,7 +39,6 @@ void Game::Run() {
 
 	if (m_isGameOver) {
 		Draw();
-		PlayWinSound();
 	}
 }
 
@@ -48,38 +49,41 @@ bool Game::IsGameOver() {
 
 bool Game::Update() {
 
-	char input = (char)_getch();
+	char input = _getch();
+	int arrowInput = 0;
 
 	int newPlayerX = m_player.GetXPosition();
 	int newPlayerY = m_player.GetYPosition();
 
-	switch (input)
-	{
-	case 'w':
-	case 'W': {
-		newPlayerY--;
-		break;
-	}
-	case 's':
-	case 'S': {
-		newPlayerY++;
-		break;
-	}
-	case 'a':
-	case 'A': {
-		newPlayerX--;
-		break;
-	}
-	case 'd':
-	case 'D': {
-		newPlayerX++;
-		break;
-	}
-	default: {
-		break;
-	}
+	// One of the arrow keys was pressed
+	if (input == kArrowInput) {
+		arrowInput = _getch();
 	}
 
+	if ((input == kArrowInput && arrowInput == kLeftArrow) ||
+		(char)input == 'A' || (char)input == 'a') {
+		newPlayerX--;
+	}
+	else if ((input == kArrowInput && arrowInput == kRightArrow) ||
+		(char)input == 'D' || (char)input == 'd') {
+		newPlayerX++;
+	}
+	else if ((input == kArrowInput && arrowInput == kUpArrow) ||
+		(char)input == 'W' || (char)input == 'w') {
+		newPlayerY--;
+	}
+	else if ((input == kArrowInput && arrowInput == kDownArrow) ||
+		(char)input == 'S' || (char)input == 's') {
+		newPlayerY++;
+	}
+	else if (input == kEscapeKey) {
+		m_UserQuit = true;
+	}
+	else if ((char)input == 'Z' || (char)input == 'z') {
+		m_player.DropKey();
+	}
+
+	// Maybe handle this in HandleCollision method?
 	if (newPlayerX == m_level.GetWidth()) {
 		newPlayerX = m_level.GetWidth() - 1;
 	}
@@ -94,89 +98,111 @@ bool Game::Update() {
 		newPlayerY = 0;
 	}
 
-	if (m_level.IsSpace(newPlayerX, newPlayerY)) {
-		m_player.SetPosition(newPlayerX,newPlayerY);
+	// if position never changed
+	if (newPlayerX == m_player.GetXPosition() && newPlayerY == m_player.GetYPosition()) {
+		return false;
 	}
-	else if (m_level.IsKey(newPlayerX, newPlayerY)) {
-		m_level.PickupKey(newPlayerX, newPlayerY);
-		m_player.PickupKey();
-		m_player.SetPosition(newPlayerX, newPlayerY);
-		PlayKeyPickupSound();
-	}
-	else if (m_level.IsDoor(newPlayerX, newPlayerY) && m_player.HasKey()) {
-		m_level.OpenDoor(newPlayerX,newPlayerY);
-		m_player.UseKey();
-		m_player.SetPosition(newPlayerX, newPlayerY);
-		PlayDoorOpenSound();
-	}
-	else if (m_level.IsDoor(newPlayerX, newPlayerY) && !m_player.HasKey()) {
-		PlayDoorClosedSound();
-	}
-	else if (m_level.IsGoal(newPlayerX, newPlayerY)) {
-		m_player.SetPosition(newPlayerX, newPlayerY);
-		return true;
+	else {
+		return HandleCollision(newPlayerX, newPlayerY);
 	}
 
 	return false;
 
 }
-void Game::Draw() {
 
-	system("cls");
-	DisplayTopBorder(m_level.GetWidth());
-	for (int y = 0; y < m_level.GetHeight(); y++) {
-		DisplayLeftBorder();
-		for (int x = 0; x < m_level.GetWidth(); x++) {
-			if (m_player.GetXPosition() == x && m_player.GetYPosition() == y) {
-				m_player.Draw();
-			}
-			else {
-				HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-				if (m_level.IsDoor(x,y)) {
-					if (m_player.HasKey()) {
-						SetConsoleTextAttribute(console, kOpenDoorColor);
-					}
-					else {
-						SetConsoleTextAttribute(console, kClosedDoorColor);
-					}
-				}
-				else {
-					SetConsoleTextAttribute(console, kRegularColor);
-				}
-				m_level.Draw(x, y);
+bool Game::HandleCollision(int newPlayerX, int newPlayerY) {
+
+	PlacableActor* collidedActor = m_level.UpdateActors(newPlayerX, newPlayerY);
+
+	if (collidedActor != nullptr && collidedActor->IsActive()) {
+		Enemy* collidedEnemy = dynamic_cast<Enemy*>(collidedActor);
+		if (collidedEnemy) {
+			collidedEnemy->Remove();
+			m_player.SetPosition(newPlayerX, newPlayerY);
+
+			m_player.DecrementLives();
+			if (m_player.GetLives() < 0) {
+				return true;
 			}
 		}
-		DisplayRightBorder();
+		
+		Money* collidedMoney = dynamic_cast<Money*>(collidedActor);
+		if (collidedMoney) {
+			collidedMoney->Remove();
+			m_player.AddMoney(collidedMoney->GetWorth());
+			m_player.SetPosition(newPlayerX, newPlayerY);
+		}
+
+		Key* collidedKey = dynamic_cast<Key*>(collidedActor);
+		if (collidedKey) {
+			if (!m_player.HasKey()) {
+				collidedKey->Remove();
+				m_player.PickupKey(collidedKey);
+				m_player.SetPosition(newPlayerX, newPlayerY);
+				PlayKeyPickupSound();
+			}
+		}
+
+		Door* collidedDoor = dynamic_cast<Door*>(collidedActor);
+		if (collidedDoor) {
+			if (!collidedDoor->IsOpen()) {
+				if (m_player.HasKey(collidedDoor->GetColor())) {
+					collidedDoor->Open();
+					m_player.UseKey();
+					m_player.SetPosition(newPlayerX, newPlayerY);
+					PlayDoorOpenSound();
+				}
+			}
+			else {
+				PlayDoorClosedSound();
+			}
+		}
+
+		Goal* collidedGoal = dynamic_cast<Goal*>(collidedActor);
+		if (collidedGoal) {
+			collidedGoal->Remove();
+			m_player.SetPosition(newPlayerX, newPlayerY);
+			PlayWinSound();
+			return true;
+
+			
+		}
 	}
-	DisplayBottomBorder(m_level.GetWidth());
-}
-
-void Game::DisplayTopBorder(int width) {
-
-	cout << kTopLeftBorder;
-	for (int i = 0; i < width; i++) {
-		cout << kHorizontalBorder;
+	else if (m_level.IsSpace(newPlayerX, newPlayerY)) {
+		// no collision
+		m_player.SetPosition(newPlayerX, newPlayerY);
 	}
-	cout << kTopRightBorder << endl;
-}
-
-void Game::DisplayBottomBorder(int width) {
-
-	cout << kBottomLeftBorder;
-
-	for (int i = 0; i < width; i++) {
-		cout << kHorizontalBorder;
+	else if (m_level.IsWall(newPlayerX, newPlayerY)) {
+		// wall collision do nothing
 	}
-	cout << kBottomRightBorder << endl;
+
+	return false;
 }
 
-void Game::DisplayLeftBorder() {
-	cout << kVerticalBorder;
+void Game::Draw() {
+
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+	system("cls");
+
+	m_level.Draw();
+
+	//Set cursor position for player
+	COORD actorCursorPosition;
+	actorCursorPosition.X = m_player.GetXPosition();
+	actorCursorPosition.Y = m_player.GetYPosition();
+	SetConsoleCursorPosition(console, actorCursorPosition);
+	m_player.Draw();
+
+	//Set the cursor to the end of the level
+	COORD currentCursorPosition;
+	currentCursorPosition.X = 0;
+	currentCursorPosition.Y = m_level.GetHeight();
+	SetConsoleCursorPosition(console, currentCursorPosition);
+
 }
 
-void Game::DisplayRightBorder() {
-	cout << kVerticalBorder << endl;
-}
+
+
 
 void Game::PlayKeyPickupSound() {
 	Beep(1175, 75);

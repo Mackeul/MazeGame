@@ -8,6 +8,7 @@ class Game {
 	Player m_player;
 	Level m_level;
 	bool m_isGameOver;
+	bool m_UserQuit;
 
 public:
 	Game();
@@ -17,14 +18,15 @@ public:
 	void Run();
 
 	bool IsGameOver();
+	bool DidUserQuit() { return m_UserQuit; }
+	int GetPlayerLives() { return m_player.GetLives(); }
 
 private:
 	bool Update();
 	void Draw();
-	void DisplayTopBorder(int width);
-    void DisplayBottomBorder(int width);
-    void DisplayLeftBorder();
-    void DisplayRightBorder();
+
+	bool HandleCollision(int newPlayerX, int newPlayerY);
+
 	void PlayKeyPickupSound();
 	void PlayDoorClosedSound();
 	void PlayDoorOpenSound();
