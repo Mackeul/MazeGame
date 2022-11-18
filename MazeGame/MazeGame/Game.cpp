@@ -152,9 +152,12 @@ bool Game::HandleCollision(int newPlayerX, int newPlayerY) {
 					m_player.SetPosition(newPlayerX, newPlayerY);
 					PlayDoorOpenSound();
 				}
+				else {
+					PlayDoorClosedSound();
+				}
 			}
 			else {
-				PlayDoorClosedSound();
+				m_player.SetPosition(newPlayerX, newPlayerY);
 			}
 		}
 
