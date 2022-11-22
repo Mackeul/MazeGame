@@ -26,9 +26,4 @@ private:
 	void Draw();
 
 	bool HandleCollision(int newPlayerX, int newPlayerY);
-
-	void PlayKeyPickupSound();
-	void PlayDoorClosedSound();
-	void PlayDoorOpenSound();
-	void PlayWinSound();
 };

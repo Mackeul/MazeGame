@@ -1,11 +1,13 @@
 
 #include <iostream>
 #include "Game.h"
+#include "AudioManager.h"
 
 using namespace std;
 
 int main()
 {
+
 
 	Game myGame;
 
@@ -19,17 +21,19 @@ int main()
 		}
 		else if (myGame.GetPlayerLives() < 0) {
 			cout << "You lose..." << endl;
-			//PlayLoseSound();
+			AudioManager::GetInstance()->PlayLoseSound();
 		}
 		else {
 			cout << "You win!" << endl;
-			//PlayWinSound()
+			AudioManager::GetInstance()->PlayWinSound();
 		}
 	}
 	else {
 		cout << "Game did not load.  Terminating..." << endl;
 	}
+	AudioManager::DestroyInstance();
 
+	return 0;
 }
 
 

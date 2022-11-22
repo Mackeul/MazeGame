@@ -13,7 +13,7 @@ public:
 	//void SetPosition(int x, int y);
 
 	bool HasKey();
-	bool HasKey(int color);
+	bool HasKey(ActorColor color);
 	void PickupKey(Key* key);
 	void UseKey();
 	void DropKey();
@@ -24,6 +24,7 @@ public:
 	int GetLives() { return m_lives; }
 	void DecrementLives() { m_lives--; }
 
+	virtual ActorType GetType() override { return ActorType::Player; }
 	virtual void Draw() override;
 
 private:
