@@ -109,15 +109,12 @@ bool Game::Update() {
 	else {
 		return HandleCollision(newPlayerX, newPlayerY);
 	}
-
 	return false;
-
 }
 
 bool Game::HandleCollision(int newPlayerX, int newPlayerY) {
 
 	bool isGameDone = false;
-
 	PlacableActor* collidedActor = m_level.UpdateActors(newPlayerX, newPlayerY);
 	
 	if (collidedActor != nullptr && collidedActor->IsActive()) {
@@ -179,7 +176,6 @@ bool Game::HandleCollision(int newPlayerX, int newPlayerY) {
 				assert(collidedGoal);
 				collidedGoal->Remove();
 				m_player.SetPosition(newPlayerX, newPlayerY);
-				AudioManager::GetInstance()->PlayWinSound();
 				isGameDone = true;
 				break;
 			}

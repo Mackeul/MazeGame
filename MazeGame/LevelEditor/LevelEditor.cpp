@@ -31,18 +31,76 @@ void DisplayRightBorder();
 bool EditLevel(char* pLevel, int& cursorX, int& cursorY, int width, int height);
 void SaveLevel(char* pLevel, int width, int height);
 void DisplayLegend();
+void RunEditor(char* pLEvel, int width, int height);
 
 int main()
 {
     int levelWidth;
     int levelHeight;
+    bool done = false;
+    char* pLevel = nullptr;
 
-    GetLevelDimensions(levelWidth, levelHeight);
+    while (!done) {
+        system("cls");
+        cout << "Please select one of the following options:" << endl;
+        cout << endl << "1. Load Level" << endl;
+        cout << endl << "2. New Level" << endl;
 
-    char* pLevel = new char[levelWidth * levelHeight];
-    for (int i = 0; i < levelWidth * levelHeight; i++) {
-        pLevel[i] = ' ';
+        int input;
+        cin >> input;
+
+        if (input == 1) {
+            // Load Level
+            cout << "Enter Level name:";
+            string levelName;
+            cin >> levelName;
+            levelName.insert(0, "../");
+
+            ifstream levelFile;
+            levelFile.open(levelName);
+
+            if (!levelFile) {
+                cout << "Opening failed." << endl;
+            }
+            else {
+                constexpr int  tempSize = 25;
+                char temp[tempSize];
+                levelFile.getline(temp, tempSize, '\n');
+                levelWidth = atoi(temp);
+
+                levelFile.getline(temp, tempSize, '\n');
+                levelHeight = atoi(temp);
+
+                pLevel = new char[levelWidth * levelHeight];
+                levelFile.read(pLevel, (long long)levelWidth * (long long)levelHeight);
+                levelFile.close();
+
+                RunEditor(pLevel, levelWidth, levelHeight);
+
+                delete[] pLevel;
+                pLevel = nullptr;
+            }
+        }
+        else if (input == 2) {
+            //New Level
+            GetLevelDimensions(levelWidth, levelHeight);
+            pLevel = new char[levelWidth * levelHeight];
+            for (int i = 0; i < levelWidth * levelHeight; i++) {
+                pLevel[i] = ' ';
+            }
+
+            RunEditor(pLevel, levelWidth, levelHeight);
+
+            delete[] pLevel;
+            pLevel = nullptr;
+        }
+        else {
+            done = true;
+        }
     }
+}
+
+void RunEditor(char* pLevel, int width, int height) {
 
     int cursorX = 0;
     int cursorY = 0;
@@ -51,19 +109,15 @@ int main()
 
     while (!doneEditing) {
         system("cls");
-        DisplayLevel(pLevel, levelWidth, levelHeight, cursorX, cursorY);
+        DisplayLevel(pLevel, width, height, cursorX, cursorY);
         DisplayLegend();
-        doneEditing = EditLevel(pLevel, cursorX, cursorY, levelWidth, levelHeight);
+        doneEditing = EditLevel(pLevel, cursorX, cursorY, width, height);
     }
 
     system("cls");
-    DisplayLevel(pLevel, levelWidth, levelHeight, -1, -1);
+    DisplayLevel(pLevel, width, height, -1, -1);
 
-    SaveLevel(pLevel, levelWidth, levelHeight);
-
-    delete[] pLevel;
-    pLevel = nullptr;
-
+    SaveLevel(pLevel, width, height);
 
 }
 
