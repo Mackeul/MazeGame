@@ -5,7 +5,10 @@ class AudioManager {
 
 	static AudioManager* s_pInstance;
 
-	AudioManager() {
+	bool m_SoundOn;
+
+	AudioManager()
+		:	m_SoundOn(true) {
 
 	}
 
@@ -19,29 +22,56 @@ public:
 	}
 
 	static void DestroyInstance() {
+
 		delete s_pInstance;
 		s_pInstance = nullptr;
 	}
 
+	void ToggleSound() {
+
+		m_SoundOn = !m_SoundOn;
+	}
+
+	bool IsSoundOn() {
+
+		return m_SoundOn;
+	}
+
 	void PlayKeyPickupSound() {
+
+		if (!m_SoundOn)
+			return;
+
 		Beep(1568, 50);
 		Beep(1568, 200);
 
 	}
 
 	void PlayMoneyPickupSound() {
+
+		if (!m_SoundOn)
+			return;
+
 		Beep(1000, 50);
 		Beep(1568, 200);
 
 	}
 
 	void PlayKeyDropSound() {
+
+		if (!m_SoundOn)
+			return;
+
 		Beep(1568, 200);
 		Beep(1568, 50);
 	}
 
 
 	void PlayDoorClosedSound() {
+
+		if (!m_SoundOn)
+			return;
+
 		Beep(500, 75);
 		Beep(500, 75);
 
@@ -53,10 +83,18 @@ public:
 	}
 
 	void PlayLoseLivesSound() {
+
+		if (!m_SoundOn)
+			return;
+
 		Beep(200, 100);
 	}
 
 	void PlayLoseSound() {
+
+		if (!m_SoundOn)
+			return;
+
 		Beep(500, 75);
 		Beep(500, 75);
 		Beep(500, 75);
@@ -64,6 +102,10 @@ public:
 	}
 
 	void PlayWinSound() {
+
+		if (!m_SoundOn)
+			return;
+
 		Beep(1568, 200);
 		Beep(1568, 200);
 		Beep(1568, 200);

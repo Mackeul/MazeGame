@@ -1,8 +1,18 @@
+#include <iostream>
+#include <assert.h>
+#include <conio.h>
+
 #include "StateMachineExampleGame.h"
 
 #include "Game.h"
 #include "MainMenuState.h"
 #include "GameplayState.h"
+#include "SettingsState.h"
+#include "HighScoreState.h"
+#include "WinState.h"
+#include "LoseState.h"
+
+using namespace std;
 
 StateMachineExampleGame::StateMachineExampleGame(Game* pOwner)
 	:	m_pOwner(pOwner),
@@ -68,10 +78,26 @@ void StateMachineExampleGame::LoadScene(SceneName name) {
 	case SceneName::MainMenu:
 		m_pNewState = new MainMenuState(this);
 		break;
+	case SceneName::Settings:
+		m_pNewState = new SettingsState(this);
+		break;
+	case SceneName::HighScores:
+		m_pNewState = new HighScoreState(this);
+		break;
 	case SceneName::GamePlay:
 		m_pNewState = new GameplayState(this);
 		break;
+	case SceneName::Win:
+		m_pNewState = new WinState(this);
+		break;
+	case SceneName::Lose:
+		m_pNewState = new LoseState(this);
+		break;
 	default:
+		system("cls");
+		cout << "Scene not implemented!" << endl;
+		char input;
+		input = _getch();
 		break;
 	}
 

@@ -33,6 +33,8 @@ public:
 	void DisplayLeftBorder();
 	void DisplayRightBorder();
 
+	static constexpr char WAL = (char)219;
+
 private:
 	bool Convert(int* playerX, int* playerY);
 	int GetIndexFromCoordinates(int x, int y);

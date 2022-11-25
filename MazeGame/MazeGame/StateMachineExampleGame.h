@@ -11,7 +11,11 @@ public:
     enum class SceneName {
         None,
         MainMenu,
-        GamePlay
+        GamePlay,
+		Settings,
+		HighScores,
+		Lose,
+		Win
     };
 
 private:

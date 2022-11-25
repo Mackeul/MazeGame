@@ -13,8 +13,6 @@
 
 using namespace std;
 
-constexpr char WAL = (char)219;
-
 constexpr char kTopRightBorder = (char)187;
 constexpr char kTopLeftBorder = (char)201;
 constexpr char kBottomRightBorder = (char)188;
