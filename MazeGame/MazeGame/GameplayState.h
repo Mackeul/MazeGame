@@ -24,7 +24,9 @@ class GameplayState : public GameState {
 
 	int m_currentLevel;
 	std::vector<std::string> m_levelNames;
-	
+
+	int m_input;
+
 
 public:
 	GameplayState(StateMachineExampleGame* pOwner);
@@ -33,12 +35,14 @@ public:
 	virtual void Enter() override;
 	virtual bool Update(bool processInput = true) override;
 	virtual void Draw() override;
+	void GetInput() override;
 
 private:
 	bool Load();
 	void HandleCollision(int newPlayerX, int newPlayerY);
 
 	void DrawHUD(const HANDLE& console);
+
 
 
 };

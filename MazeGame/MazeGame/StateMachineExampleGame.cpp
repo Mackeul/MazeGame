@@ -1,6 +1,7 @@
 #include <iostream>
 #include <assert.h>
 #include <conio.h>
+#include <thread>
 
 #include "StateMachineExampleGame.h"
 
@@ -34,6 +35,9 @@ bool StateMachineExampleGame::UpdateCurrentState(bool processInput) {
 	}
 
 	if (m_pCurrentState != nullptr) {
+		if (processInput) {
+			m_pCurrentState->GetInput();
+		}
 		done = m_pCurrentState->Update(processInput);
 	}
 

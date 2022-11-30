@@ -28,7 +28,8 @@ GameplayState::GameplayState(StateMachineExampleGame* pOwner)
 		m_skipFrameCount(0),
 		m_beatLevel(false),
 		m_currentLevel(0),
-		m_pLevel(nullptr) {
+		m_pLevel(nullptr),
+		m_input(0) {
 
 	m_levelNames.push_back("Level1.txt");
 	m_levelNames.push_back("Level2.txt");
@@ -57,40 +58,43 @@ void GameplayState::Enter() {
 	Load();
 }
 
+void GameplayState::GetInput() {
+
+	m_input = _getch();
+
+	if (m_input == kArrowInput) {
+		m_input = _getch();
+	}
+
+}
+
 bool GameplayState::Update(bool processInput) {
 
 	if (processInput && !m_beatLevel) {
-		int input = _getch();
-		int arrowInput = 0;
 
 		int newPlayerX = m_player.GetXPosition();
 		int newPlayerY = m_player.GetYPosition();
 
-		// One of the arrow keys was pressed
-		if (input == kArrowInput) {
-			arrowInput = _getch();
-		}
-
-		if ((input == kArrowInput && arrowInput == kLeftArrow) ||
-			(char)input == 'A' || (char)input == 'a') {
+		if ((m_input == kLeftArrow) ||
+			(char)m_input == 'A' || (char)m_input == 'a') {
 			newPlayerX--;
 		}
-		else if ((input == kArrowInput && arrowInput == kRightArrow) ||
-			(char)input == 'D' || (char)input == 'd') {
+		else if ((m_input == kRightArrow) ||
+			(char)m_input == 'D' || (char)m_input == 'd') {
 			newPlayerX++;
 		}
-		else if ((input == kArrowInput && arrowInput == kUpArrow) ||
-			(char)input == 'W' || (char)input == 'w') {
+		else if ((m_input == kUpArrow) ||
+			(char)m_input == 'W' || (char)m_input == 'w') {
 			newPlayerY--;
 		}
-		else if ((input == kArrowInput && arrowInput == kDownArrow) ||
-			(char)input == 'S' || (char)input == 's') {
+		else if ((m_input == kDownArrow) ||
+			(char)m_input == 'S' || (char)m_input == 's') {
 			newPlayerY++;
 		}
-		else if (input == kEscapeKey) {
+		else if (m_input == kEscapeKey) {
 			m_pOwner->LoadScene(StateMachineExampleGame::SceneName::MainMenu);
 		}
-		else if ((char)input == 'Z' || (char)input == 'z') {
+		else if ((char)m_input == 'Z' || (char)m_input == 'z') {
 			m_player.DropKey();
 		}
 
@@ -109,11 +113,9 @@ bool GameplayState::Update(bool processInput) {
 			newPlayerY = 0;
 		}
 
-		// if position changed
-		if (newPlayerX != m_player.GetXPosition() || newPlayerY != m_player.GetYPosition()) {
-			HandleCollision(newPlayerX, newPlayerY);
-		}
+		HandleCollision(newPlayerX, newPlayerY);
 	}
+
 	if (m_beatLevel) {
 		++m_skipFrameCount;
 		if (m_skipFrameCount > kFramesToSkip) {
@@ -131,12 +133,14 @@ bool GameplayState::Update(bool processInput) {
 			}
 		}
 	}
+
 	return false;
 }
 
 void GameplayState::HandleCollision(int newPlayerX, int newPlayerY) {
 
 	bool isGameDone = false;
+	
 	PlacableActor* collidedActor = m_pLevel->UpdateActors(newPlayerX, newPlayerY);
 
 	if (collidedActor != nullptr && collidedActor->IsActive()) {

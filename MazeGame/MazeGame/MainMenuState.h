@@ -6,6 +6,7 @@ class StateMachineExampleGame;
 class MainMenuState : public GameState {
 
 	StateMachineExampleGame* m_pOwner;
+	int m_input;
 
 public:
 	MainMenuState(StateMachineExampleGame* pOwner);
@@ -13,6 +14,7 @@ public:
 
 	virtual bool Update(bool processInput = true) override;
 	virtual void Draw() override;
+	void GetInput() override;
 
 };
 

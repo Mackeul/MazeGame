@@ -18,9 +18,14 @@ void Game::RunGameLoop() {
 	bool isGameOver = false;
 
 	while (!isGameOver) {
-		Update(false);
-		Draw();
-		isGameOver = Update();
+		//std::chrono::steady_clock::time_point current_time = std::chrono::steady_clock::now();
+		//std::chrono::duration<float> elapsed_seconds = current_time - start_time;
+		//if (elapsed_seconds.count() >= 1.0f) {
+			Update(false);
+			Draw();
+			isGameOver = Update();
+			//start_time = current_time;
+		//}
 	}
 	Draw();
 }

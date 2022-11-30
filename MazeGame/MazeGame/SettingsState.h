@@ -7,6 +7,7 @@ class SettingsState : public GameState
 {
 
 	StateMachineExampleGame* m_pOwner;
+	int m_input;
 
 public:
 	SettingsState(StateMachineExampleGame* pOwner);
@@ -14,6 +15,7 @@ public:
 
 	virtual bool Update(bool processInput = true) override;
 	virtual void Draw() override;
+	void GetInput() override;
 
 };
 

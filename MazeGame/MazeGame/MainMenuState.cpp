@@ -19,22 +19,31 @@ MainMenuState::MainMenuState(StateMachineExampleGame* pOwner)
 
 }
 
+void MainMenuState::GetInput() {
+
+	m_input = _getch();
+
+	//if (m_input == kArrowInput) {
+	//	m_input = _getch();
+	//}
+
+}
+
 bool MainMenuState::Update(bool processInput) {
 
 	bool shouldQuit = false;
 
 	if (processInput) {
-		int input = _getch();
-		if (input == kEscapeKey || (char)input == kQuit) {
+		if (m_input == kEscapeKey || (char)m_input == kQuit) {
 			shouldQuit = true;
 		}
-		else if ((char)input == kPlay) {
+		else if ((char)m_input == kPlay) {
 			m_pOwner->LoadScene(StateMachineExampleGame::SceneName::GamePlay);
 		}
-		else if ((char)input == kSettings) {
+		else if ((char)m_input == kSettings) {
 			m_pOwner->LoadScene(StateMachineExampleGame::SceneName::Settings);
 		}
-		else if ((char)input == kHighScores) {
+		else if ((char)m_input == kHighScores) {
 			m_pOwner->LoadScene(StateMachineExampleGame::SceneName::HighScores);
 		}
 	}
