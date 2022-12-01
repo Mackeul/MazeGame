@@ -39,6 +39,8 @@ bool SettingsState::Update(bool processInput) {
 			AudioManager::GetInstance()->ToggleSound();
 			AudioManager::GetInstance()->PlayMoneyPickupSound();
 		}
+
+		m_input = 0;
 	}
 
 	return false;

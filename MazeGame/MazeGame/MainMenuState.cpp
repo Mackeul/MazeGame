@@ -46,6 +46,7 @@ bool MainMenuState::Update(bool processInput) {
 		else if ((char)m_input == kHighScores) {
 			m_pOwner->LoadScene(StateMachineExampleGame::SceneName::HighScores);
 		}
+		m_input = 0;
 	}
 
 	return shouldQuit;

@@ -69,11 +69,12 @@ void GameplayState::GetInput() {
 }
 
 bool GameplayState::Update(bool processInput) {
-
+	int newPlayerX = m_player.GetXPosition();
+	int newPlayerY = m_player.GetYPosition();
 	if (processInput && !m_beatLevel) {
 
-		int newPlayerX = m_player.GetXPosition();
-		int newPlayerY = m_player.GetYPosition();
+		//int newPlayerX = m_player.GetXPosition();
+		//int newPlayerY = m_player.GetYPosition();
 
 		if ((m_input == kLeftArrow) ||
 			(char)m_input == 'A' || (char)m_input == 'a') {
@@ -113,8 +114,11 @@ bool GameplayState::Update(bool processInput) {
 			newPlayerY = 0;
 		}
 
-		HandleCollision(newPlayerX, newPlayerY);
+		// reset m_input while waiting for player to make a move.
+		m_input = 0;
 	}
+	
+	HandleCollision(newPlayerX, newPlayerY);
 
 	if (m_beatLevel) {
 		++m_skipFrameCount;

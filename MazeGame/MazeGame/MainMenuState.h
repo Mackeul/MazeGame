@@ -6,7 +6,7 @@ class StateMachineExampleGame;
 class MainMenuState : public GameState {
 
 	StateMachineExampleGame* m_pOwner;
-	int m_input;
+	int m_input = 0;
 
 public:
 	MainMenuState(StateMachineExampleGame* pOwner);

@@ -12,4 +12,6 @@ public:
 	virtual void DrawCurrentState() = 0;
 	virtual void ChangeState(GameState* pNewState) = 0;
 	virtual bool CleanUp() = 0;
+	virtual void GetInputFromState(bool processInput = true) = 0;
+	virtual bool ThreadStarted() = 0;
 };

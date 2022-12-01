@@ -1,7 +1,6 @@
 #include <iostream>
 #include <assert.h>
 #include <conio.h>
-#include <thread>
 
 #include "StateMachineExampleGame.h"
 
@@ -35,14 +34,25 @@ bool StateMachineExampleGame::UpdateCurrentState(bool processInput) {
 	}
 
 	if (m_pCurrentState != nullptr) {
-		if (processInput) {
-			m_pCurrentState->GetInput();
-		}
+
 		done = m_pCurrentState->Update(processInput);
 	}
 
 	return done;
 
+}
+
+void StateMachineExampleGame::GetInputFromState(bool processInput) {
+	
+	if (processInput) {
+		if (m_pCurrentState) {
+			m_pCurrentState->GetInput();
+		}
+	}
+}
+
+bool StateMachineExampleGame::ThreadStarted() {
+	return m_inputThreadStarted;
 }
 
 void StateMachineExampleGame::DrawCurrentState() {

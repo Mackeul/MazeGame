@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <thread>
 #include "vld.h"
 
 #include "Game.h"
@@ -15,7 +16,9 @@ int main()
 	StateMachineExampleGame gameStateMachine(&myGame);
 
 	myGame.Initialize(&gameStateMachine);
-	myGame.RunGameLoop();
+	std::thread inputThread(&Game::RunGameLoop, &myGame);
+	myGame.GetInputLoop();
+	inputThread.join();
 	myGame.Deinitialize();
 
 	AudioManager::DestroyInstance();

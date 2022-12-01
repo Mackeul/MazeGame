@@ -4,8 +4,7 @@
 class Game;
 class GameState;
 
-class StateMachineExampleGame :
-    public GameStateMachine
+class StateMachineExampleGame : public GameStateMachine
 {
 public:
     enum class SceneName {
@@ -24,6 +23,8 @@ private:
     GameState* m_pCurrentState;
     GameState* m_pNewState;
 
+	bool m_inputThreadStarted = false;
+
 public:
     StateMachineExampleGame(Game* pOwner);
 
@@ -33,5 +34,7 @@ public:
     virtual void ChangeState(GameState* pNewState) override;
     virtual bool CleanUp() override;
     void LoadScene(SceneName name);
+	void GetInputFromState(bool processInput = true) override;
+	bool ThreadStarted();
 };
 
