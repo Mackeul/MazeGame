@@ -16,9 +16,9 @@ int main()
 	StateMachineExampleGame gameStateMachine(&myGame);
 
 	myGame.Initialize(&gameStateMachine);
-	std::thread inputThread(&Game::RunGameLoop, &myGame);
+	std::thread gameLoopThread(&Game::RunGameLoop, &myGame);
 	myGame.GetInputLoop();
-	inputThread.join();
+	gameLoopThread.join();
 	myGame.Deinitialize();
 
 	AudioManager::DestroyInstance();
