@@ -38,3 +38,9 @@ void HighScoreState::Draw() {
 	cout << "Press any key to return to Main Menu " << endl;
 
 }
+
+void HighScoreState::GetInput() {
+
+	m_input = _getch();
+
+}

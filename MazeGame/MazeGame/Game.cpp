@@ -15,8 +15,6 @@ void Game::Initialize(GameStateMachine* pStateMachine) {
 
 void Game::RunGameLoop() {
 
-	//bool isGameOver = false;
-
 	while (!m_isGameOver) {
 
 		std::chrono::steady_clock::time_point current_time = std::chrono::steady_clock::now();
@@ -57,6 +55,5 @@ bool Game::Update(bool processInput) {
 }
 
 void Game::Draw() {
-	
 	m_pStateMachine->DrawCurrentState();
 }

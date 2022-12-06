@@ -23,10 +23,6 @@ void MainMenuState::GetInput() {
 
 	m_input = _getch();
 
-	//if (m_input == kArrowInput) {
-	//	m_input = _getch();
-	//}
-
 }
 
 bool MainMenuState::Update(bool processInput) {

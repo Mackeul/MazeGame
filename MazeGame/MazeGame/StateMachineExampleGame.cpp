@@ -51,10 +51,6 @@ void StateMachineExampleGame::GetInputFromState(bool processInput) {
 	}
 }
 
-bool StateMachineExampleGame::ThreadStarted() {
-	return m_inputThreadStarted;
-}
-
 void StateMachineExampleGame::DrawCurrentState() {
 
 	if (m_pCurrentState) {

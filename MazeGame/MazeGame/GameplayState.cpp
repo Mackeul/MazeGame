@@ -69,12 +69,11 @@ void GameplayState::GetInput() {
 }
 
 bool GameplayState::Update(bool processInput) {
+
 	int newPlayerX = m_player.GetXPosition();
 	int newPlayerY = m_player.GetYPosition();
-	if (processInput && !m_beatLevel) {
 
-		//int newPlayerX = m_player.GetXPosition();
-		//int newPlayerY = m_player.GetYPosition();
+	if (processInput && !m_beatLevel) {
 
 		if ((m_input == kLeftArrow) ||
 			(char)m_input == 'A' || (char)m_input == 'a') {

@@ -23,8 +23,6 @@ private:
     GameState* m_pCurrentState;
     GameState* m_pNewState;
 
-	bool m_inputThreadStarted = false;
-
 public:
     StateMachineExampleGame(Game* pOwner);
 
@@ -35,6 +33,5 @@ public:
     virtual bool CleanUp() override;
     void LoadScene(SceneName name);
 	void GetInputFromState(bool processInput = true) override;
-	bool ThreadStarted();
 };
 
