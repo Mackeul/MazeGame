@@ -35,3 +35,4 @@
 .vs/
 .debug/
 x64/
+*.vscode
