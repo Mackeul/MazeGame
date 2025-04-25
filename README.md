@@ -1,2 +1,10 @@
-# CGSpectrum
-Where I put my CGSpectrum Course work for review.
+# MazeGame
+A little game created while taking intro to game programming class at CGSpectrum.
+
+## Some topics covered in this program
+- State Machines
+- Singleton
+- Multi-Threading
+- Audio Manager
+- JSON file parsing
+- UML Class diagram
